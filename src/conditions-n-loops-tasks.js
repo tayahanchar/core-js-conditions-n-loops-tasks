@@ -495,18 +495,22 @@ function shuffleChar(str, iterations) {
   let start = '';
   let finish = '';
 
-  for (let i = 0; i < iterations; i += 1) {
-    for (let l = 0; l < str.length; l += 1) {
-      if (l % 2 === 0) {
-        start += copyString[l];
-      } else {
-        finish += copyString[l];
-      }
-    }
+  const cache = {};
 
-    copyString = start + finish;
-    start = '';
-    finish = '';
+  for (let i = 0; i < iterations; i += 1) {
+    if (cache[copyString]) {
+      copyString = cache[copyString];
+    } else {
+      for (let l = 1; l < str.length; l += 2) {
+        finish += copyString[l];
+        start += copyString[l - 1];
+      }
+
+      cache[copyString] = start + finish;
+      copyString = start + finish;
+      start = '';
+      finish = '';
+    }
   }
 
   return copyString;
@@ -529,8 +533,61 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  let result = [];
+  const arrFromNumber = String(number);
+
+  for (let i = 0; i < arrFromNumber.length; i += 1) {
+    for (let l = 0; l < arrFromNumber.length; l += 1) {
+      const newstr = [...arrFromNumber];
+      const mainnum = newstr[i];
+      newstr[i] = newstr[l];
+      newstr[l] = mainnum;
+      let resstr = '';
+      for (let k = 0; k < newstr.length; k += 1) {
+        resstr += newstr[k];
+      }
+      if (+resstr > number) result.push(+resstr);
+    }
+  }
+
+  const newNum = `${Math.min(...result)}`;
+  result = [];
+
+  for (let i = 0; i < newNum.length; i += 1) {
+    for (let l = 0; l < newNum.length; l += 1) {
+      const newstr = [...newNum];
+      const mainnum = newstr[i];
+      newstr[i] = newstr[l];
+      newstr[l] = mainnum;
+      newstr[l] = mainnum;
+      let resstr = '';
+      for (let k = 0; k < newstr.length; k += 1) {
+        resstr += newstr[k];
+      }
+      if (+resstr > number) result.push(+resstr);
+    }
+  }
+
+  const newNum2 = `${Math.min(...result)}`;
+  result = [];
+
+  for (let i = 0; i < newNum2.length; i += 1) {
+    for (let l = 0; l < newNum2.length; l += 1) {
+      const newstr = [...newNum2];
+      const mainnum = newstr[i];
+      newstr[i] = newstr[l];
+      newstr[l] = mainnum;
+      newstr[l] = mainnum;
+      let resstr = '';
+      for (let k = 0; k < newstr.length; k += 1) {
+        resstr += newstr[k];
+      }
+      if (+resstr > number) result.push(+resstr);
+    }
+  }
+
+  return Math.min(...result);
 }
 
 module.exports = {
